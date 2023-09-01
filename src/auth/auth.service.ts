@@ -1,43 +1,39 @@
 import {
-  HttpException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UsersRepository } from './auth.repository';
-import bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt';
+import { Users } from '@prisma/client';
 import { JwtService } from '@nestjs/jwt';
-
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersRepository: UsersRepository,
+    private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
   ) {}
-  create(body: CreateUserDto) {
-    const { email, password } = body;
-    return this.usersRepository.create({ email, password });
+
+  async signUp(body: any) {
+    return await this.usersService.create(body);
   }
-  async signIn(email, password) {
-    const user = await this.usersRepository.findOne(email);
-    if (!user) throw new NotFoundException('User not found');
+  async signIn(body: any) {
+    const user = await this.usersService.getUserByEmail(body.email);
+    if (!user) throw new UnauthorizedException('Wrong email');
 
-    if (user && bcrypt.compareSync(password, user.password)) {
-      const payload = { sub: user.id, email: user.email };
+    const checkPassword = bcrypt.compareSync(body.password, user.password);
+    if (!checkPassword) throw new UnauthorizedException('Wrong password');
 
-      //falta adicionar na entidade sessions
-      return { access_token: this.jwtService.signAsync(payload) };
-    } else {
-      throw new UnauthorizedException();
-    }
+    return this.createToken(user);
   }
+  async createToken(user: Users) {
+    const { id, email } = user;
+    const payload = {
+      id,
+      email,
+    };
+    const token = this.jwtService.sign(payload);
 
-  findAll() {
-    return this.usersRepository.findAll();
-  }
-
-  remove(id: number) {
-    return this.usersRepository.remove(id);
+    return { token };
   }
 }
