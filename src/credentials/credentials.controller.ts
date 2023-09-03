@@ -5,8 +5,8 @@ import { UpdateCredentialDto } from './dto/update-credential.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { User } from '../decorators/user.decorator';
 
-@Controller('credentials')
 @UseGuards(AuthGuard)
+@Controller('credentials')
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
@@ -18,13 +18,15 @@ export class CredentialsController {
   }
 
   @Get()
-  findAll() {
-    return this.credentialsService.findAll();
+  findAll(@User() user ) {
+    const userId = user.id
+    return this.credentialsService.findAll(  userId );
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.credentialsService.findOne(+id);
+  findOne(@Param('id') id: string , @User() user ) {
+    const userId = user.id
+    return this.credentialsService.findOne(+id , userId );
   }
 
   @Patch(':id')

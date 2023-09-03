@@ -3,7 +3,6 @@ import { CreateCredentialDto } from './dto/create-credential.dto';
 import { UpdateCredentialDto } from './dto/update-credential.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import Cryptr from 'cryptr';
-import { abort } from 'process';
 
 @Injectable()
 export class CredentialsRepository {
@@ -27,17 +26,36 @@ export class CredentialsRepository {
 
   }
 
-  findAll() {
-    return `This action returns all credentials`;
+  async findAll( userId : number) {
+    const credentials =  await this.prisma.credentials.findMany({
+      where: {
+        userId: userId,
+      },
+    })
+    const decryptedCredentials = credentials?.map((credential) => {
+     const decryptedPassword = this.cryptr.decrypt(credential.password);
+     return  {
+       ...credential,
+       password: decryptedPassword
+     }
+    })
+    return decryptedCredentials;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} credential`;
+  findOne(id: number, userId: number) {
+    return  this.prisma.credentials.findUnique({
+      where: {
+        id: id,
+        userId: userId
+      },
+      
+    })
   }
-  findOneByTitle(title: string) {
+  findOneByTitle(title: string, userId: number) {
     return this.prisma.credentials.findFirst({
       where: {
         title: title,
+        userId: userId
       },
     });
   }
