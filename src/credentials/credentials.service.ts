@@ -1,11 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateCredentialDto } from './dto/create-credential.dto';
 import { UpdateCredentialDto } from './dto/update-credential.dto';
+import { CredentialsRepository } from './credentials.repository';
 
 @Injectable()
 export class CredentialsService {
-  create(createCredentialDto: CreateCredentialDto) {
-    return 'This action adds a new credential';
+  constructor(private readonly credentialsRepository: CredentialsRepository) {}
+  create(body: CreateCredentialDto, userId : number) {
+    const { title } = body;
+    const checkCredential = this.credentialsRepository.findOneByTitle( title );
+    if(checkCredential) {
+      throw new ConflictException( 'Credential title already exists' )
+    }
+    return this.credentialsRepository.create( body  , userId );
   }
 
   findAll() {

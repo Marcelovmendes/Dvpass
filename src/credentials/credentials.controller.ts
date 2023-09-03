@@ -1,15 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CredentialsService } from './credentials.service';
 import { CreateCredentialDto } from './dto/create-credential.dto';
 import { UpdateCredentialDto } from './dto/update-credential.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { User } from '../decorators/user.decorator';
 
 @Controller('credentials')
+@UseGuards(AuthGuard)
 export class CredentialsController {
   constructor(private readonly credentialsService: CredentialsService) {}
 
   @Post()
-  create(@Body() createCredentialDto: CreateCredentialDto) {
-    return this.credentialsService.create(createCredentialDto);
+  create(@Body() body: CreateCredentialDto, @User() user ) {
+    console.log(user)
+    const userId = user.id
+    return this.credentialsService.create(body , userId);
   }
 
   @Get()

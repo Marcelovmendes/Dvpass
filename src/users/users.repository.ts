@@ -1,13 +1,14 @@
 import { Injectable } from "@nestjs/common";
-import { PrismaClient } from "@prisma/client";
 import * as bcrypt from "bcrypt";
+import { PrismaService } from "../prisma/prisma.service";
+import { UserDto } from "./dto/user.dto";
 
 @Injectable()
 export class UsersRepository {
 
-    constructor(private readonly prisma: PrismaClient) {}
+    constructor(private readonly prisma: PrismaService) {}
 
-    create(body: any){
+    create(body: UserDto){
      const { password } = body;
       const saltRounds = 10;
       const hashedPassword = bcrypt.hashSync(password, saltRounds);
@@ -23,6 +24,13 @@ export class UsersRepository {
         return this.prisma.users.findUnique({
             where: {
                 email: email
+            }
+        });
+    }
+    findOneById(id: number){
+        return this.prisma.users.findUnique({
+            where: {
+                id: id
             }
         });
     }
