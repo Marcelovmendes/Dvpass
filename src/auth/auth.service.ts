@@ -20,7 +20,7 @@ export class AuthService {
      
     return await this.usersService.create(body);
   }
-  async   signIn(body:  CreateUserDto) {
+  async  signIn(body:  CreateUserDto) {
     const user = await this.usersService.getUserByEmail(body.email);
     if (!user) throw new UnauthorizedException('Wrong email');
 
@@ -29,7 +29,7 @@ export class AuthService {
 
     return this.createToken(user);
   }
-  async createToken(user: Users) {
+   createToken(user: Users) {
     const { id, email } = user;
     const payload = {
       id,
@@ -39,13 +39,13 @@ export class AuthService {
 
     return { token };
   }
-  checkToken(token: string) {
+  checkToken(token?: string) {
     try {
       const data = this.jwtService.verify(token);
+
       return data;
     } catch (error) {
-      console.log(error)
-      throw new BadRequestException('Invalid token');
+      throw new BadRequestException(error);
     }
-} 
+  }
 }

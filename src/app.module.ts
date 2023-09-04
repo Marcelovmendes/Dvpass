@@ -8,11 +8,13 @@ import { CardsModule } from './cards/cards.module';
 import { NotesModule } from './notes/notes.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { EraseRepository } from './erase/erase.repository';
+import { EraseModule } from './erase/erase.module';
 
 
 @Module({
-  imports: [PrismaModule, CredentialsModule, AuthModule, CardsModule, NotesModule, UsersModule],
+  imports: [PrismaModule, CredentialsModule, AuthModule, CardsModule, NotesModule, UsersModule, EraseModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, EraseRepository],
 })
 export class AppModule {}

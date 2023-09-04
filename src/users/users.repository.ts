@@ -21,7 +21,7 @@ export class UsersRepository {
     }
         
     findOne(email: string){
-        return this.prisma.users.findUnique({
+        return this.prisma.users.findFirst({
             where: {
                 email: email
             }
@@ -30,7 +30,7 @@ export class UsersRepository {
     findOneById(id: number){
         return this.prisma.users.findUnique({
             where: {
-                id: id
+                id: id,
             }
         });
     }

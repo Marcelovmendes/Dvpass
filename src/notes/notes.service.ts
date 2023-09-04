@@ -24,12 +24,4 @@ export class NotesService {
    if(!note) throw new ForbiddenException('No notes found');
   return note   
   }
-
-  update(id: number, updateNoteDto: UpdateNoteDto) {
-    return `This action updates a #${id} note`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} note`;
-  }
 }

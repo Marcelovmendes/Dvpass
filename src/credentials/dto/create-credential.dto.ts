@@ -2,19 +2,19 @@ import { IsNotEmpty, IsString, IsStrongPassword, IsUrl } from "class-validator";
 
 export class CreateCredentialDto {
      
-     @IsUrl()
+     //@IsUrl()
      @IsNotEmpty()
      url: string;
 
-     @IsString()
+   //   @IsString()
      @IsNotEmpty()
      username: string;
      
-     @IsStrongPassword()
+    // @IsStrongPassword()
      @IsNotEmpty()
      password: string;
 
-     @IsString()
+   // @IsString()
      @IsNotEmpty()
      title: string;
 

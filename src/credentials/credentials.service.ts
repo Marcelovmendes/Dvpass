@@ -11,33 +11,27 @@ import { CredentialsRepository } from './credentials.repository';
 @Injectable()
 export class CredentialsService {
   constructor(private readonly credentialsRepository: CredentialsRepository) {}
-  create(body: CreateCredentialDto, userId: number) {
+  async create(body: CreateCredentialDto, userId: number) {
     const { title } = body;
-    const checkCredential = this.credentialsRepository.findOneByTitle(title , userId);
+    const checkCredential = await this.credentialsRepository.findOneByTitle(title , userId);
     if (checkCredential) {
+      console.log(checkCredential, 'credentials')
       throw new ConflictException('Credential title already exists');
     }
     return this.credentialsRepository.create(body, userId);
   }
 
-  findAll( userId: number) {
-    const credentials = this.credentialsRepository.findAll(userId);
+  async findAll( userId: number) {
+    const credentials =  await this.credentialsRepository.findAll(userId);
     if (!credentials) throw new NotFoundException('No credentials found');
 
     return credentials;
   }
 
-  findOne(id: number, userId: number) {
-    const credentials = this.credentialsRepository.findOne(id  , userId);
+  async findOne(id: number, userId: number) {
+    const credentials =  await this.credentialsRepository.findOne(id  , userId);
     if(!credentials) throw new ForbiddenException('No credentials found');
     return credentials
   }
 
-  update(id: number, updateCredentialDto: UpdateCredentialDto) {
-    return `This action updates a #${id} credential`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} credential`;
-  }
 }

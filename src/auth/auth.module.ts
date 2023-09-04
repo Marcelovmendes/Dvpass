@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
+import { UsersService } from '../users/users.service';
 @Global()
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { UsersModule } from '../users/users.module';
       }
 
     }), UsersModule],
-  providers: [AuthService],
+  providers: [AuthService, UsersService],
   controllers: [AuthController],
   exports: [AuthService],
 })
