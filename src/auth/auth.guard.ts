@@ -16,22 +16,19 @@ export class AuthGuard implements CanActivate {
     private readonly userService: UsersService
   ) { }
 
-   canActivate(context: ExecutionContext):boolean   {
-    const response = context.switchToHttp().getResponse();
-    const { authorization } = response.headers;
+  async canActivate(context: ExecutionContext){
+    const request = context.switchToHttp().getRequest();
+    const { authorization } = request.headers;
 
     try {
       const data = this.authService.checkToken((authorization ?? "").split(" ")[1]);
-      const user =  this.userService.getUserById(parseInt(data.id));
-      console.log(user,'user guard')
-      response.locals.user = user
+      const user = await this.userService.getUserById(parseInt(data.id));
+      console.log(user,'guard')
+      request.user = user
        return true
     } catch (error) {
-      console.log(error,'auth guard error');
       return false;
     }
-
-
   }
 
 }

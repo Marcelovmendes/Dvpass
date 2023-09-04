@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
+import { EraseService } from './erase.service';
 @Global()
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { UsersService } from '../users/users.service';
       }
 
     }), UsersModule],
-  providers: [AuthService, UsersService],
+  providers: [AuthService, UsersService, EraseService],
   controllers: [AuthController],
   exports: [AuthService],
 })

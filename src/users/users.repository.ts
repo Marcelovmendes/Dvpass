@@ -27,8 +27,8 @@ export class UsersRepository {
             }
         });
     }
-    findOneById(id: number){
-        return this.prisma.users.findUnique({
+    async findOneById(id: number){
+        return await this.prisma.users.findUnique({
             where: {
                 id: id,
             }
